@@ -11,10 +11,6 @@ import Security
 extension CFDictionary: @unchecked Sendable {}
 
 struct KeychainService: Sendable {
-    enum KeychainContainer: String {
-        case `default` = "my_keychain_container"
-    }
-    
     private let container: KeychainContainer
     private let queue = DispatchQueue(label: "com.keychain.service.queue", attributes: .concurrent)
 
@@ -30,7 +26,6 @@ struct KeychainService: Sendable {
             kSecReturnData: true,
             kSecMatchLimit: kSecMatchLimitOne
         ] as CFDictionary
-
         
         let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(data: Data?, status: OSStatus), Error>) in
             queue.async {
