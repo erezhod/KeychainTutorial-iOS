@@ -29,11 +29,11 @@ enum KeychainError: Error, LocalizedError {
         case .invalidValue:
             "The value you have provided or requested is invalid"
         case .duplicateItem:
-            "The item you are trying to create already exists"
+            "The Keychain item you are trying to create already exists"
         case .itemNotFound:
-            "Could not find the item you are looking for"
+            "Could not find the item you are looking for in the Keychain"
         case .status(let status):
-            "Keychain says: Error code \(status) occurred"
+            "Keychain error: \(status)"
         }
     }
 }

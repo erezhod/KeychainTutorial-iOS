@@ -10,7 +10,7 @@ import Security
 
 extension CFDictionary: @unchecked Sendable {}
 
-final class KeychainService: Sendable {
+struct KeychainService: Sendable {
     enum KeychainContainer: String {
         case `default` = "my_keychain_container"
     }

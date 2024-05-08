@@ -7,22 +7,6 @@
 
 import Foundation
 
-extension Task where Failure == Error {
-    /// Performs an async task in a sync context.
-    ///
-    /// - Note: This function blocks the thread until the given operation is finished. The caller is responsible for managing multithreading.
-    static func synchronous(priority: TaskPriority? = nil, operation: @escaping @Sendable () async throws -> Success) {
-        let semaphore = DispatchSemaphore(value: 0)
-
-        Task(priority: priority) {
-            defer { semaphore.signal() }
-            return try await operation()
-        }
-
-        semaphore.wait()
-    }
-}
-
 @propertyWrapper
 final class KeychainItem<Value: Codable & Sendable>: Sendable {
     private let keychain: KeychainService
@@ -44,6 +28,8 @@ final class KeychainItem<Value: Codable & Sendable>: Sendable {
             Task.synchronous { [unowned self] in
                 do {
                     value = try await keychain.getItem(forKey: key, class: `class`)
+                } catch let error as KeychainError {
+                    print(error.errorDescription ?? "Keychain error occurred")
                 } catch {
                     print(error.localizedDescription)
                 }
@@ -63,8 +49,10 @@ final class KeychainItem<Value: Codable & Sendable>: Sendable {
                             try await keychain.setItem(newValue, forKey: key, class: `class`)
                         }
                     }
+                } catch let error as KeychainError {
+                    print(error.errorDescription ?? "Keychain error occurred")
                 } catch {
-                    print(error)
+                    print(error.localizedDescription)
                 }
             }
         }
