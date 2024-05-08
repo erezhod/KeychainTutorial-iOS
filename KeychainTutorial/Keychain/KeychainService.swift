@@ -31,7 +31,8 @@ struct KeychainService: Sendable {
             kSecMatchLimit: kSecMatchLimitOne
         ] as CFDictionary
 
-        let result = try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<(data: Data?, status: OSStatus), Error>) in
+        
+        let result = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<(data: Data?, status: OSStatus), Error>) in
             queue.async {
                 var keychainObject: AnyObject?
                 let status = SecItemCopyMatching(query, &keychainObject)
@@ -71,7 +72,7 @@ struct KeychainService: Sendable {
             kSecValueData: data
         ] as CFDictionary
 
-        try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             queue.async {
                 let status = SecItemAdd(query, nil)
                 
@@ -98,7 +99,7 @@ struct KeychainService: Sendable {
             kSecValueData: data
         ] as CFDictionary
         
-        try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             queue.async {
                 let status = SecItemUpdate(query, updateAttributes)
                 
@@ -119,7 +120,7 @@ struct KeychainService: Sendable {
             kSecAttrAccount: key
         ] as CFDictionary
 
-        try await withUnsafeThrowingContinuation { (continuation: UnsafeContinuation<Void, Error>) in
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             queue.async {
                 let status = SecItemDelete(query)
                 
